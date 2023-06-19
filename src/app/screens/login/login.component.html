@@ -1,0 +1,39 @@
+<div class="container">
+  <form [formGroup]="form" class="form-container" (ngSubmit)="onSubmit()">
+    <h1 class="login-title">Sign In</h1>
+    <mat-form-field class="form-field">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        formControlName="email"
+        autofocus
+        (keydown)="onLoginFormFieldInput()"
+      />
+    </mat-form-field>
+    <mat-form-field class="form-field">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="password"
+        (keydown)="onLoginFormFieldInput()"
+      />
+    </mat-form-field>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      class="form-field button"
+      [disabled]="form.invalid"
+      *ngIf="!loading"
+    >
+      Go
+    </button>
+    <div class="loading-button" *ngIf="loading">
+      <mat-spinner diameter="20" color="accent"></mat-spinner>
+    </div>
+    <div class="invalid-text-container" *ngIf="errorMessage">
+      <span>{{ errorMessage }}</span>
+    </div>
+  </form>
+</div>

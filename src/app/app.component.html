@@ -1,0 +1,9 @@
+<div
+  class="content-wrapper"
+  [class.loader-container]="loading && router.url === '/'"
+>
+  <div *ngIf="loading && router.url === '/'" class="loader">
+    <mat-spinner diameter="50" color="accent"></mat-spinner>
+  </div>
+  <router-outlet></router-outlet>
+</div>
