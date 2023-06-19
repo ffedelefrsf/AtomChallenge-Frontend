@@ -18,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { take } from 'rxjs';
 
 import { TaskDTO } from '../../model/task.dto';
 import { TaskStatus } from '../../model/task-status.enum';
@@ -111,7 +112,7 @@ export class CreateOrEditTaskComponent {
         delete newTaskObject.id;
         observableToRun = this.taskService.create(newTaskObject);
       }
-      observableToRun.subscribe({
+      observableToRun.pipe(take(1)).subscribe({
         next: (response) => {
           const { data: newTask } = response;
           this.loading = false;

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { Subscription } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -107,19 +107,22 @@ export class HomeComponent implements OnDestroy {
       resultingStatus = TaskStatus.COMPLETED;
     }
     const newEntity = { ...task, status: resultingStatus };
-    this.taskService.edit(task.id as string, newEntity).subscribe({
-      next: (response) => {
-        const { data: newTask } = response;
-        task = newTask as TaskDTO;
-        this.changeTaskTab(task);
-        showSnackbar(this.snackBar, 'Changed successfully.');
-        this.loading = false;
-      },
-      error: (error) => {
-        showErrorSnackbar(this.snackBar, error?.error?.extraMessage);
-        this.loading = false;
-      },
-    });
+    this.taskService
+      .edit(task.id as string, newEntity)
+      .pipe(take(1))
+      .subscribe({
+        next: (response) => {
+          const { data: newTask } = response;
+          task = newTask as TaskDTO;
+          this.changeTaskTab(task);
+          showSnackbar(this.snackBar, 'Changed successfully.');
+          this.loading = false;
+        },
+        error: (error) => {
+          showErrorSnackbar(this.snackBar, error?.error?.extraMessage);
+          this.loading = false;
+        },
+      });
   }
 
   private changeTaskTab = (task: TaskDTO) => {
@@ -163,18 +166,21 @@ export class HomeComponent implements OnDestroy {
 
   deleteTask(task: TaskDTO) {
     this.loading = true;
-    this.taskService.delete(task.id as string).subscribe({
-      next: (_response) => {
-        showSnackbar(this.snackBar, 'Deleted successfully.');
-        this.selectedTab.set = this.selectedTab.set.filter(
-          (_task) => _task.id !== task.id
-        );
-        this.loading = false;
-      },
-      error: (error) => {
-        showErrorSnackbar(this.snackBar, error?.error?.extraMessage);
-        this.loading = false;
-      },
-    });
+    this.taskService
+      .delete(task.id as string)
+      .pipe(take(1))
+      .subscribe({
+        next: (_response) => {
+          showSnackbar(this.snackBar, 'Deleted successfully.');
+          this.selectedTab.set = this.selectedTab.set.filter(
+            (_task) => _task.id !== task.id
+          );
+          this.loading = false;
+        },
+        error: (error) => {
+          showErrorSnackbar(this.snackBar, error?.error?.extraMessage);
+          this.loading = false;
+        },
+      });
   }
 }
